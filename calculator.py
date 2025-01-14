@@ -1,9 +1,34 @@
 
 # function to input an opération and return a list
 def input_operation(a, b, sign):
-    a = float(input("Enter a number: ", ))
-    sign = input("Enter an operator (+, -, *, /): ", )
-    b = float(input("Enter another number: ", ))
+    test = False
+    while test == False:
+        a = input("Enter a number: ", )
+        try :
+            a = float(a)
+            if type(a) == float :
+                test = True
+        except ValueError : print("Invalid input. Please a valid number.") 
+
+    test =  False
+    while test == False:
+        sign = input("Enter an operator (+, -, *, /): ", )
+        if sign == "+" or sign == "-" or sign == "*" or sign == "/":
+            test = True
+        else:
+            print("Invalid input. Please choose the operator between +, -, *, /.")
+    
+    test = False
+    while test == False:
+        b = input("Enter another number: ", )
+        try :
+            b = float(b)
+            if b == 0:
+                print("Operation impossible. Please enter another number.") 
+            elif type(b) == float:
+                test = True          
+        except ValueError : print("Invalid input. Please enter a valid number.")
+
     return a, b, sign
 
 
@@ -39,7 +64,7 @@ def main():
     calculator(a, b, sign)
 
 
-
+# division par 0
 main()
 
 
