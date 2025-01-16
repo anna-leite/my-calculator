@@ -122,7 +122,7 @@ while True:
     print("          --------------------------")
 
     # Take input from the user
-    choice = input("Saisir le choix [+] [-] [*] [/] [^] [%] [#] [!] [?] ")
+    choice = input("Saisir le choix [+] [-] [*] [/] [^] [%] [!] [?] [#] ")
     if select_op(choice) == -1:
         # End program
         print("Fermé.")
