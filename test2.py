@@ -1,188 +1,161 @@
-def reset_variables(num, sign, tens, dot, decimals):
-    # fonction qui réinitialise les variables 
+def reset_variables():
     num = 0
-    sign = '+'
+    num_sign = '+'
     tens = 1
-    dot = 0
+    dot = False
     decimals = 10
-    return num, sign, tens, dot, decimals
-
-# def zero_division(list):
-#         test = False
-#         while test == False :
-#             for i in range(0, len(list)):
-#                 if i == (len(list)-1):
-#                     test = True
-#                     break
-#                 elif list[i] == '/' and list[i+1] == 0 :
-#                     try:
-#                         list[i-1] / list[i+1]
-#                     except ZeroDivisionError: 
-#                             print("Operation impossible. Please enter a correct operation :")
+    return num, num_sign, tens, dot, decimals
                 
-
 def input_operation():
-    # cette fonction parcour une chaine de caractère, grace à une boucle, afin d'en isolé et retourné nombre et opérateur d'une opération valide
-    # elle gère les erreurs de saisie
-    # elle retourne un liste qui contient une opération valide 
+    """cette fonction parcour une chaine de caractère, grace à une boucle, afin d'en isolé et retourné nombre et opérateur d'une opération valide
+    elle gère les erreurs de saisie
+    elle retourne un liste qui contient une opération valide""" 
 
-    test = False # variable boléenne, condition de sortie de la boucle "while" 
+    valid_input = True 
 
-    # boucle de test pour une saisie correct, gère les erreurs de saisie
-    while test == False:
+    while valid_input:
+        num, num_sign, tens, dot, decimals = reset_variables()
+        operation_parsed = [] # la varible operation_parsed va récupérer les caractère de la saisie opération
 
-        # initialisation des variables :
-        num = 0  # variable pour stocker un nombre, initialiser à 0 pour le besion des opérations 
-        sign = '+' # variable pour stocker le signe d'un nombre, posotif par défault
-        tens = 1 # variable pour la gestion des dizaines des grands nombres
-        dot = 0 # variable qui contrôle le type float
-        decimals = 10 # varible pour la gestion des chiffres après la virgule
-        list = [] # la varible list va récupérer les caractère de la saisie opération
+        input_string = input("Enter an input : ",).replace(" ", "") # la varialble _input est une string qui est entrée par l'utilisateur
 
-        operation = input("Enter an operation : ",).replace(" ", "") # la varialble operation est une string qui est entrée par l'utilisateur
+        for i, char in enumerate(input_string):
 
-        # boucle qui parcours chaque caractères de la string de la variable opératiion 
-        for i, char in enumerate(operation):
-            # condition pour verifier une erreur de division par zéro
+            # verifie une erreur de division par zéro
             if char == '/':
-                if operation[i+1] == '0':
+                if input_string[i+1] == '0':
                     print("Operation impossible. Try again")
                     break
 
-            #condition pour vérifier si le nombre est positif ou négatif
-            elif char == "-": 
+            # vérifie si le nombre est positif ou négatif
+            if char == "-": 
                 if num != 0: # si la variable num contient un nombre, il est renvoyé dans la list
-                    list.append(num)
+                    operation_parsed.append(num)
                     # puis réinitialisation des variables afin de trier les prochains caractères
-                    num, sign, tens, dot, decimals = reset_variables(num, sign, tens, dot, decimals)
+                    num, num_sign, tens, dot, decimals = reset_variables()
 
-                sign = '-' # sign prend la string '-'
+                num_sign = '-' # num_sign prend la string '-'
                 continue 
 
-            # condition pour savoir si le nombre est un float 
+            # verifie si le nombre est un float 
             elif char == '.':
-                if dot == 1: # gestion d'erreur si il ya deux points dans un chiffre
+                if dot: # gestion d'erreur si il ya deux points dans un chiffre
                     print("Invalid input. Please enter a correct operation with at least two numbers (float or integer) and operator choosen between +, -, *, / :")
                     break
 
                 num = float(num) # si char est un point alors num est un flot
-                dot = 1 # au premier point, dot = 1 pour vérifier si il n'y a pas de deuxième point
+                dot = True # au premier point, dot = True pour vérifier si il n'y a pas de deuxième point
                 continue
                 
-            # condition si char est un chiffre :
+            # verifie si char est un chiffre :
             elif char.isnumeric(): 
-                if type(num) == int: # si num est un entier
-                        num = num * tens + int(sign + char) # char est adittioner à "-" et retourné en entier, 
-                        # (num * tens) pour controler les dizaines
-                        tens = 10 # la variable prend la valeur 10 décaler d'une dizaine à chaque boucle jusqu'à ce que le nombre soit ajouté à list
-                elif type(num) == float: # si num est un numbre à virgule
-                    num = num + (float(sign + char) / decimals) # (float(char) / décimals) gère la place après la virgule
-                    decimals = decimals * 10 # la variable decimals est multipliée par 10 à chaque boucle tant que le num n'est pas ajouté à list
+                if type(num) == int: 
+                        num = num * tens + int(num_sign + char) # char est adittioner à "-" et retourné en entier, (num * tens) pour controler les dizaines
+                        tens = 10 # la variable prend la valeur 10 décaler d'une dizaine à chaque boucle jusqu'à ce que le nombre soit ajouté à operation_parsed
+                elif type(num) == float: 
+                    num = num + (float(num_sign + char) / decimals) # (float(char) / décimals) gère la place après la virgule
+                    decimals = decimals * 10 # la variable decimals est multipliée par 10 à chaque boucle tant que le num n'est pas ajouté à operation_parsed
 
 
-            # condition si char correspond à un opérateur pris en charge par le programme
+            # verifie si char correspond à un opérateur pris en charge par le programme
             elif char == "+" or char == "*" or char == "/" or char == '%' or char == '^':
-                list.append(num) # num est ajouté à list
-                num, sign, tens, dot, decimals = reset_variables(num, sign, tens, dot, decimals)
-                list.append(char) # la string de l'opérateur est ajouté à list
+                operation_parsed.append(num) 
+                num, num_sign, tens, dot, decimals = reset_variables()
+                operation_parsed.append(char) 
                 continue
 
-            else : # condition pour toute autre caractère saisie
+            else : # toute autre caractère saisie
                 print("Invalid input. Please enter a correct operation with at least two numbers (float or integer) and operator choosen between +, -, *, / :")
                 break
 
             
-            # condition tester à chaque boucle : si char est le dernier caractère de la string operation
-            if i == (len(operation)-1):
-                if not char.isnumeric(): # si un opérateur est le dernier caractère de opération
+            # verifie si char est le dernier caractère de la string operation
+            if i == (len(input_string)-1):
+                if not char.isnumeric():
                     print("Invalid input. Please enter a correct operation with at least two numbers (float or integer) and operator choosen between +, -, *, / :")
                     break
                 else:
-                    list.append(num)  # num est ajouté à list
-                    if len(list) == 1 : # si list ne contient qu'un élément
+                    operation_parsed.append(num)  
+                    if len(operation_parsed) == 1 : 
                         print("Invalid input. Please enter a correct operation with at least two numbers (float or integer) and operator choosen between +, -, *, / :")
                         break
 
-                    test = True # condition de sortie de boucle
+                    valid_input = False
 
-    return list
+    return operation_parsed
 
-def calculator(list):
-    # cette fonction réalise des opération mathématique selon les règles de priorité.
-    # elle prend en paramètre une liste composé de nombre et d'opérateur qui propose une opération correct (sauf pour diviser 0)
+def calculator(operation_parsed):
+    """cette fonction réalise des opération mathématique selon les règles de priorité.
+    elle prend en paramètre une liste composé de nombre et d'opérateur qui propose une opération correct (sauf pour diviser 0)"""
 
-    result = 0 # la variable résultat est initialisé à 0
+    result = 0 
 
-    while len(list) != 1: # la condition de sortie de la boucle est que list ne contienne plus que 1 élément (qui sera le résultat)
-
-        test = False
-        # la première boucle réalise toute les opération de puissance de list, la plus prioritaire de toute les opérations mathématiques
-        while test == False :
-            # la boucle for parcours tout les éléments de list
-            for i in range(0, len(list)):
-
-                if i == (len(list)-1): # si le programme lit le dernier élément alors on sort de la boucle "while"
-                    test = True
+    while len(operation_parsed) != 1: # la condition de sortie de la boucle est que operation_parsed ne contienne plus que 1 élément (qui sera le résultat)
+        remaining_operation = True
+        # la première boucle réalise toute les opération de puissance de operation_parsed, la plus prioritaire de toute les opérations mathématiques
+        while remaining_operation :
+            for i in range(0, len(operation_parsed)):
+                if i == (len(operation_parsed)-1):
+                    remaining_operation = False
                     break
-                if list[i] == '^': # si le programme détecte la saisie "^"
-                    list[i] = list[i-1] ** list[i+1] # le programme réalise l'opération
-                    list.pop(i+1) # le programme supprime les nombres qui ont été utilisé, list ne contient plus que le résultat de l'opération
-                    list.pop(i-1)
-                    break # on sort de la boucle 'for' pour recommencer à parcourir list grâce à la boucle "while"
+                if operation_parsed[i] == '^': 
+                    operation_parsed[i] = operation_parsed[i-1] ** operation_parsed[i+1] 
+                    operation_parsed.pop(i+1) # supprime les nombres qui ont été utilisé, operation_parsed ne contient plus que le résultat de l'opération
+                    operation_parsed.pop(i-1)
+                    break 
 
-        test = False
+        remaining_operation = True
         # cette boucle "while" gère les opération de division, multiplication et modulo selon la méthode de la boucle précédente
-        while test == False :
-            for i in range(0, len(list)):
-                if i == (len(list)-1):
-                    test = True
+        while remaining_operation:
+            for i in range(0, len(operation_parsed)):
+                if i == (len(operation_parsed)-1):
+                    remaining_operation = False
                     break
-                if list[i] == '*' or list[i] == '/' or list[i] == '%':
-                    if list[i] =='*':
-                        list[i] = list[i-1] * list[i+1]
-                        list.pop(i+1)
-                        list.pop(i-1)
+                if operation_parsed[i] == '*' or operation_parsed[i] == '/' or operation_parsed[i] == '%':
+                    if operation_parsed[i] =='*':
+                        operation_parsed[i] = operation_parsed[i-1] * operation_parsed[i+1]
+                        operation_parsed.pop(i+1)
+                        operation_parsed.pop(i-1)
                         break
-                    elif list[i] == '/':
-                        list[i] = list[i-1] / list[i+1]
-                        list.pop(i+1)
-                        list.pop(i-1)
+                    elif operation_parsed[i] == '/':
+                        operation_parsed[i] = operation_parsed[i-1] / operation_parsed[i+1]
+                        operation_parsed.pop(i+1)
+                        operation_parsed.pop(i-1)
                         break 
-                    elif list[i] == '%':
-                        list[1] = list[i-1] % list[i+1]
-                        list.pop(i+1)
-                        list.pop(i-1)
+                    elif operation_parsed[i] == '%':
+                        operation_parsed[1] = operation_parsed[i-1] % operation_parsed[i+1]
+                        operation_parsed.pop(i+1)
+                        operation_parsed.pop(i-1)
                         break
 
     
-        test = False
+        remaining_operation = True
         # enfin cette boucle gère les additions et soustractions
         # attention : les soustraction sont repérée lorsqu'il n'y a pas d'opérateur entre deux nombres, le deuxième nombre étant obligatoirement négatif
-        while test == False: 
-            for i in range(0, len(list)):
-                if i == (len(list)-1):
-                    test = True
+        while remaining_operation: 
+            for i in range(0, len(operation_parsed)):
+                if i == (len(operation_parsed)-1):
+                    remaining_operation = False
                     break
-                if list[i] == '+':
-                    if list[i] == '+':
-                        list[i] = list[i-1] + list[i+1]
-                        list.pop(i+1)
-                        list.pop(i-1)
+                if operation_parsed[i] == '+':
+                    if operation_parsed[i] == '+':
+                        operation_parsed[i] = operation_parsed[i-1] + operation_parsed[i+1]
+                        operation_parsed.pop(i+1)
+                        operation_parsed.pop(i-1)
                         break
-                elif type(list[i]) == int or type(list[i]) == float:
-                    if type(list[i+1]) == int or type(list[i+1]) == float:
-                        list[i] = list[i] + list[i+1]
-                        list.pop(i+1)
+                elif type(operation_parsed[i]) == int or type(operation_parsed[i]) == float:
+                    if type(operation_parsed[i+1]) == int or type(operation_parsed[i+1]) == float:
+                        operation_parsed[i] = operation_parsed[i] + operation_parsed[i+1]
+                        operation_parsed.pop(i+1)
                         break
     
-    # lorsqu'il ne reste qu'une seule valeur dans list, c'est le résultat!
-    result = list[0]                    
+    # lorsqu'il ne reste qu'une seule valeur dans operation_parsed, c'est le résultat!
+    result = operation_parsed[0]                    
     return result
 
 def main():
-    result = 0
-    list = input_operation()
-    result = calculator(list)
+    operation_parsed = input_operation()
+    result = calculator(operation_parsed)
     print(" = ", result)
 
 main()
