@@ -64,8 +64,10 @@ def main():
     calculator(a, b, sign)
 
 
-# division par 0
 main()
+
+# essayer la meme avec une liste/stack. un tuple? reduire a la plus petite operation possible et remonter!
+# et implementer la fonction qui reconner les entiers!
 
 
 
