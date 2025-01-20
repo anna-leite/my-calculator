@@ -88,7 +88,7 @@ def input_operation():
 
     return list
 
-def zero_division(list):
+def zero_division(sum, list):
         test = False
         while test == False :
             for i in range(0, len(list)):
@@ -172,7 +172,7 @@ def main():
     list = []
     list = input_operation()
     while sum == None:
-        sum = zero_division(list)
+        sum = zero_division(sum, list)
         if sum == 0:
             continue
         list = input_operation()
